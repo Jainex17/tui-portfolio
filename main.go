@@ -1,61 +1,37 @@
 package main
 
 import (
-	"fmt"
 	"log"
+	"time"
 
-	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 )
 
-type Styles struct {
-	BorderColor lipgloss.Color
-	InputField  lipgloss.Style
-}
-
-func DefaultStyles() *Styles {
-	s := new(Styles)
-	s.BorderColor = lipgloss.Color("36")
-	s.InputField = lipgloss.NewStyle().BorderForeground(s.BorderColor).BorderStyle(lipgloss.NormalBorder()).Padding(1).Width(80)
-
-	return s
-}
-
 type model struct {
-	index       int
-	width       int
-	height      int
-	styles      *Styles
-	questions   []Question
-	answerField textinput.Model
+	index  int
+	width  int
+	height int
 }
 
-type Question struct {
-	question string
-	answer   string
-}
-
-func NewQuestion(question string) Question {
-	return Question{question: question}
-}
-
-func New(questions []Question) *model {
-	styles := DefaultStyles()
-	answerField := textinput.New()
-	answerField.Placeholder = "Your answer here"
-	answerField.Width = 75
-	answerField.Focus()
-	return &model{questions: questions, answerField: answerField, styles: styles}
+func New() *model {
+	return &model{index: 0}
 }
 
 func (m model) Init() tea.Cmd {
-	return nil
+	return tea.Tick(time.Second*2, func(t time.Time) tea.Msg {
+		return "timer"
+	})
 }
 
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	var cmd tea.Cmd
 	switch msg := msg.(type) {
+
+	case string:
+		if msg == "timer" {
+			m.index++
+		}
 
 	case tea.WindowSizeMsg:
 		m.width = msg.Width
@@ -65,25 +41,19 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		switch msg.String() {
 		case "ctrl+c":
 			return m, tea.Quit
-
-		case "enter":
-			current := &m.questions[m.index]
-			current.answer = m.answerField.Value()
-			cangofurthur := m.Next()
-
-			if m.index < len(m.questions) {
-
-				if !cangofurthur {
-					return m, nil
-				}
-
-				m.answerField.SetValue("")
+		case "right":
+			if m.index == 3 || m.index == 0 {
 				return m, nil
 			}
+			m.index++
+		case "left":
+			if m.index == 1 || m.index == 0 {
+				return m, nil
+			}
+			m.index--
 		}
 	}
 
-	m.answerField, cmd = m.answerField.Update(msg)
 	return m, cmd
 }
 
@@ -92,61 +62,100 @@ func (m model) View() string {
 		return "loading..."
 	}
 
-	if m.index == len(m.questions) {
-		var result string
-		for i, q := range m.questions {
-			result += fmt.Sprintf("%d. %s\n   Answer: %s\n\n", i+1, q.question, q.answer)
-		}
-		result += "Press Ctrl+C to exit"
+	var content string
+	content += `
+     ██╗  █████╗  ██╗ ███╗  ██╗ ███████╗ ██╗  ██╗
+     ██║ ██╔══██╗ ██║ ████╗ ██║ ██╔════╝ ╚██╗██╔╝
+     ██║ ███████║ ██║ ██╔██╗██║ █████╗    ╚███╔╝ 
+██╗  ██║ ██╔══██║ ██║ ██║╚████║ ██╔══╝    ██╔██╗ 
+╚█████╔╝ ██║  ██║ ██║ ██║ ╚███║ ███████╗ ██╔╝╚██╗
+ ╚════╝  ╚═╝  ╚═╝ ╚═╝ ╚═╝  ╚══╝ ╚══════╝ ╚═╝  ╚═╝
+`
 
-		return lipgloss.Place(
-			m.width,
-			m.height,
-			lipgloss.Center,
-			lipgloss.Center,
-			m.styles.InputField.Render(result),
-		)
+	navbox := lipgloss.NewStyle().
+		Width(m.width - 20).Align(lipgloss.Center).PaddingTop(2)
+
+	navlink1 := `home`
+	navlink2 := `projects`
+	navlink3 := `experience`
+
+	switch m.index {
+	case 1:
+		content = navlink1
+	case 2:
+		content = navlink2
+	case 3:
+		content = navlink3
 	}
 
-	return lipgloss.Place(
-		m.width,
-		m.height,
-		lipgloss.Center,
-		lipgloss.Center,
-		lipgloss.JoinVertical(
-			lipgloss.Left,
-			m.questions[m.index].question,
-			m.styles.InputField.Render(m.answerField.View()),
-		),
-	)
-}
+	navstyle := lipgloss.NewStyle().
+		Width(20).
+		Padding(0, 1).
+		Align(lipgloss.Center)
 
-func (m *model) Next() bool {
-	if m.index < len(m.questions)-1 {
-		m.index++
-		return true
+	navstyleActive := navstyle.Copy().
+		Width(20).
+		Padding(0, 1).
+		Align(lipgloss.Center).
+		BorderStyle(lipgloss.NormalBorder()).
+		BorderForeground(lipgloss.Color("63"))
+
+	nav := lipgloss.JoinHorizontal(lipgloss.Center,
+		lipgloss.NewStyle().Render(
+			func() string {
+				if m.index == 1 {
+					return navstyleActive.Render(navlink1)
+				}
+				return navstyle.Render(navlink1)
+			}()),
+		lipgloss.NewStyle().Render(func() string {
+			if m.index == 2 {
+				return navstyleActive.Render(navlink2)
+			}
+			return navstyle.Render(navlink2)
+		}()),
+		lipgloss.NewStyle().Render(func() string {
+			if m.index == 3 {
+				return navstyleActive.Render(navlink3)
+			}
+			return navstyle.Render(navlink3)
+		}()),
+	)
+
+	navRendered := navbox.Render(nav)
+
+	box := lipgloss.NewStyle().
+		Width(m.width).
+		Height(func() int {
+			if m.index >= 1 {
+				return m.height - 20
+			}
+			return m.height
+		}()).
+		MarginTop(2).
+		Align(lipgloss.Center, lipgloss.Center)
+
+	contentRendered := lipgloss.NewStyle().
+		Width(m.width-50).
+		Height(m.height-20).
+		Align(lipgloss.Center, lipgloss.Center).
+		Padding(2, 10, 2, 10).
+		BorderStyle(lipgloss.NormalBorder()).
+		BorderForeground(lipgloss.Color("63")).
+		Render(content)
+
+	boxRendered := box.Render(contentRendered)
+
+	if m.index == 0 {
+		return lipgloss.JoinVertical(lipgloss.Center, boxRendered)
 	} else {
-		m.index++
-		return false
+		return lipgloss.JoinVertical(lipgloss.Center, navRendered, boxRendered)
 	}
 }
 
 func main() {
-	questions := []Question{
-		NewQuestion("What is your name?"),
-		NewQuestion("What is your github username"),
-		NewQuestion("why you want to work with us?"),
-	}
 
-	m := New(questions)
-
-	f, err := tea.LogToFile("debug.log", "debug")
-
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	defer f.Close()
+	m := New()
 
 	p := tea.NewProgram(m, tea.WithAltScreen())
 
