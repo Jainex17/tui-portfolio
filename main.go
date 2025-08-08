@@ -139,7 +139,7 @@ func (m model) View() string {
 		Width(m.width-50).
 		Height(m.height-20).
 		Align(lipgloss.Center, lipgloss.Center).
-		Padding(2, 10, 2, 10).
+		Padding(5, 10, 5, 10).
 		BorderStyle(lipgloss.NormalBorder()).
 		BorderForeground(lipgloss.Color("63")).
 		Render(content)
