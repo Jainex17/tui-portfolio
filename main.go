@@ -169,12 +169,20 @@ reach out for any exciting projects or crazy ideas.`
 		)
 
 		contactHeader := `$ cat contact.txt`
-
-		contactContent := `
-Email: jainexp017@gmail.com
-Website: jainex.xyz
-LinkedIn: linkedin.com/in/jainex17
-GitHub: github.com/jainex17`
+		emailLine := lipgloss.NewStyle().Foreground(lipgloss.Color("150")).Underline(true).Render("Email:") + " jainexp017@gmail.com"
+		websiteLine := lipgloss.NewStyle().Foreground(lipgloss.Color("150")).Underline(true).Render("Website:") + " jainex.xyz"
+		linkedinLine := lipgloss.NewStyle().Foreground(lipgloss.Color("150")).Underline(true).Render("LinkedIn:") + " linkedin.com/in/jainex17"
+		githubLine := lipgloss.NewStyle().Foreground(lipgloss.Color("150")).Underline(true).Render("GitHub:") + " github.com/jainex17"
+		contactContent := lipgloss.JoinVertical(lipgloss.Left,
+			"",
+			emailLine,
+			"",
+			websiteLine,
+			"",
+			linkedinLine,
+			"",
+			githubLine,
+		)
 
 		content = lipgloss.JoinVertical(lipgloss.Left, 
 			lipgloss.NewStyle().Foreground(lipgloss.Color("202")).Render(contentTop),
@@ -186,49 +194,54 @@ GitHub: github.com/jainex17`
 		)
 	
 	case 3:
-		projectsTop := `$ cat projects.txt`
+		projectsTop1 := `$ cat Web_apps.txt `
 		
-		webAppsLine := lipgloss.NewStyle().Foreground(lipgloss.Color("150")).Underline(true).Render("Web Applications")
-		webAppsContent := `
-blaze - Create website in seconds (3k+ visitors, 400+ signups, 500+ website generated)
-GrabPost - Grab amazing images for your content
-CoSnippet - Platform to share code snippets
-RepoVerifier - Verify GitHub repo originality
-Coinplay - Gambling simulation :)
-PicShareX - Anonymous image sharing platform
-CheerMe - Support platform with Stripe integration`
+		project1Line := lipgloss.NewStyle().Foreground(lipgloss.Color("50")).Underline(true).Render("blaze:") + " Create website in seconds (3k+ visitors, 400+ signups, 500+ website generated)"
+		project2Line := lipgloss.NewStyle().Foreground(lipgloss.Color("50")).Underline(true).Render("GrabPost:") + " Grab amazing images for your content"
+		project3Line := lipgloss.NewStyle().Foreground(lipgloss.Color("50")).Underline(true).Render("RepoVerifier:") + " Verify GitHub repo originality"
+		project4Line := lipgloss.NewStyle().Foreground(lipgloss.Color("50")).Underline(true).Render("Coinplay:") + " Gambling simulation :)"
+		project5Line := lipgloss.NewStyle().Foreground(lipgloss.Color("50")).Underline(true).Render("PicShareX:") + " Anonymous image sharing platform"
+		project6Line := lipgloss.NewStyle().Foreground(lipgloss.Color("50")).Underline(true).Render("CheerMe:") + " Support platform with Stripe integration"
 
-		blockchainLine := lipgloss.NewStyle().Foreground(lipgloss.Color("150")).Underline(true).Render("Blockchain & Web3")
-		blockchainContent := `
-ETHCinemaNation - Ethereum-based movie rating platform`
+		webAppsContent := lipgloss.JoinVertical(lipgloss.Left,
+			"",
+			project1Line,
+			project2Line,
+			project3Line,
+			project4Line,
+			project5Line,
+			project6Line,
+		)
 
-		mobileLine := lipgloss.NewStyle().Foreground(lipgloss.Color("150")).Underline(true).Render("Mobile Application")
-		mobileContent := `
-WallSpace - Get Unique Wallpapers for you mobile`
+		blockchainLine := lipgloss.NewStyle().Foreground(lipgloss.Color("202")).Render("$ cat Blockchain.txt")
+		blockchainContent := lipgloss.NewStyle().Foreground(lipgloss.Color("50")).Underline(true).Render("ETHCinemaNation:") + " Ethereum-based movie rating platform \n"
 
-		extensionsLine := lipgloss.NewStyle().Foreground(lipgloss.Color("150")).Underline(true).Render("Extensions & Bot")
-		extensionsContent := `
-create-ex-ts - Instant Express + TypeScript setup (NPM Package)
-Calendra - amazing calendar for your React app (NPM Package)
-AniQuiz - Anime Quiz and AI ChatBot (Discord Bot)`
+		mobileLine := lipgloss.NewStyle().Foreground(lipgloss.Color("202")).Render("$ cat MobileApps.txt")
+		mobileContent := lipgloss.NewStyle().Foreground(lipgloss.Color("50")).Underline(true).Render("WallSpace:") + " Get Unique Wallpapers for you mobile \n"
+
+		extensionsLine := lipgloss.NewStyle().Foreground(lipgloss.Color("202")).Render("$ cat Extensions.txt")
+		extensionsContent := lipgloss.NewStyle().Foreground(lipgloss.Color("50")).Underline(true).Render("create-ex-ts:") + " Instant Express + TypeScript setup (NPM Package) \n"
+		extensionsContent += lipgloss.NewStyle().Foreground(lipgloss.Color("50")).Underline(true).Render("Calendra:") + " amazing calendar for your React app (NPM Package) \n"
+		extensionsContent += lipgloss.NewStyle().Foreground(lipgloss.Color("50")).Underline(true).Render("AniQuiz:") + " Anime Quiz and AI ChatBot (Discord Bot) \n"
 
 		projectsContent := lipgloss.JoinVertical(lipgloss.Left,
-			"",
-			webAppsLine,
 			webAppsContent,
 			"",
 			blockchainLine,
+			"",
 			blockchainContent,
 			"",
 			mobileLine,
+			"",
 			mobileContent,
 			"",
 			extensionsLine,
+			"",
 			extensionsContent,
 		)
 
 		content = lipgloss.JoinVertical(lipgloss.Left, 
-			lipgloss.NewStyle().Foreground(lipgloss.Color("202")).Render(projectsTop),
+			lipgloss.NewStyle().Foreground(lipgloss.Color("202")).Render(projectsTop1),
 			projectsContent,
 		)
 	}
