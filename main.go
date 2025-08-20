@@ -139,9 +139,11 @@ func (m model) View() string {
 	╚════╝  ╚═╝  ╚═╝ ╚═╝ ╚═╝  ╚══╝ ╚══════╝ ╚═╝  ╚═╝
    `
 
+	content += "\n Full Stack Developer"
+
 	switch m.index {
 	case 2:
-		contentTop := `$ cat about.txt`
+		contentTop := `$ whoami`
 		
 		aboutText := `A Full Stack Developer, passionate about building things on the internet. 
 I work with Frontend, Backend, and App development - whatever gets the 
@@ -245,7 +247,7 @@ AniQuiz - Anime Quiz and AI ChatBot (Discord Bot)`
 		Width(m.width-50).
 		Height(m.height-10).
 		Padding(0).
-		BorderStyle(lipgloss.NormalBorder()).
+		BorderStyle(lipgloss.RoundedBorder()).
 		BorderForeground(lipgloss.Color("5"))
 
 	if m.index == 1 {
